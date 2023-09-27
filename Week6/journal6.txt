@@ -1,0 +1,141 @@
+1.	Create a result table which contain student id, student name and 5 subject marks.
+?import sqlite3
+conn = sqlite3.connect("student_results.db")
+cursor = conn.cursor()
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS student_results (
+        student_id INTEGER PRIMARY KEY,
+        student_name TEXT NOT NULL,
+        subject1 INTEGER,
+        subject2 INTEGER,
+        subject3 INTEGER,
+        subject4 INTEGER,
+        subject5 INTEGER
+    ) )
+
+conn.commit()
+conn.close()
+2.	Enter 10 student details with its marks.
+?students_data = [
+    (1, 'John Doe', 85, 90, 78, 92, 88),
+    (2, 'Jane Smith', 76, 88, 92, 84, 79),
+    (3, 'Bob Johnson', 91, 82, 87, 76, 95),
+    (4, 'Alice Brown', 88, 94, 89, 78, 91),
+    (5, 'Tom Wilson', 77, 85, 90, 92, 86),
+    (6, 'Emily Davis', 92, 89, 84, 77, 93),
+    (7, 'Chris Lee', 80, 76, 91, 88, 85),
+    (8, 'Sarah Adams', 89, 83, 86, 78, 94),
+    (9, 'Mike Jackson', 78, 90, 92, 85, 89),
+    (10, 'Linda Clark', 87, 92, 84, 79, 91)
+]
+3.	Dump table into csv file “result.csv”.
+?
+ import sqlite3
+import csv
+conn = sqlite3.connect('student_results.db')
+cursor = conn.cursor()
+cursor.execute('SELECT * FROM student_results')
+data = cursor.fetchall()
+csv_file_path = 'result.csv'
+with open(csv_file_path, 'w', newline='') as csv_file:
+conn.close()
+
+
+4.	Read result.csv filt and print total marks and grade of each student. Also append total marks and grade colum into result.csv file.
+?	
+import csv
+
+with open('result.csv', 'r') as csv_file:
+    csv_reader = csv.reader(csv_file)
+    header = next(csv_reader)  
+    data = list(csv_reader)   
+
+grades = [] 
+total_marks_index = len(header)  
+grade_index = len(header) + 1    
+
+for row in data:
+    subject_marks = [int(mark) for mark in row[2:7]]
+    total_marks = sum(subject_marks)
+    row.append(str(total_marks))  
+ 
+    if total_marks >= 90:
+        grade = 'A+'
+    elif total_marks >= 80:
+        grade = 'A'
+    elif total_marks >= 70:
+        grade = 'B'
+    elif total_marks >= 60:
+        grade = 'C'
+    else:
+        grade = 'F'
+    row.append(grade)  # Append grade to the row
+    grades.append(grade)  # Store grade for later use
+
+header.append('Total Marks')
+header.append('Grade')
+
+with open('result.csv', 'w', newline='') as csv_file:
+    csv_writer = csv.writer(csv_file)
+    csv_writer.writerow(header)  # Write the updated header
+    csv_writer.writerows(data)  # Write the updated data
+           
+    for i, row in enumerate(data):
+    student_name = row[1]
+    total_marks = row[total_marks_index]
+    grade = grades[i]
+    print(f"{student_name}: Total Marks - {total_marks}, Grade - {grade}")
+          print("Total marks and grade have been appended to result.csv.")
+
+
+
+
+5.	List out top 3 student if and name with its percentage.
+?
+	import csv
+
+with open('result.csv', 'r') as csv_file:
+    csv_reader = csv.reader(csv_file)
+    header = next(csv_reader)  
+    data = list(csv_reader)    
+
+# Calculate total marks and percentages
+students_data = [ ]  
+
+for row in data:
+    student_name = row[1]
+    subject_marks = [int(mark) for mark in row[2:7]]
+    total_marks = sum(subject_marks)
+    percentage = (total_marks / 500) * 100  
+    students_data.append((student_name, percentage))
+
+students_data.sort(key=lambda x: x[1], reverse=True)
+
+print("Top 3 Students:")
+for i, (student_name, percentage) in enumerate(students_data[:3]):
+    print(f"{i + 1}. {student_name}: Percentage - {percentage:.2f}%")
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
