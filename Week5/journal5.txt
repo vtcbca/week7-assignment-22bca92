@@ -1,0 +1,26 @@
+WEEK-:5
+1:- Write a python program create csv file student.csv(sid,sname,city,contact) using 10 records 
+(in which 5 records input directly and 5 records take input from user) write records into this file.
+Read this file using csv module and print it. 
+NOTE: Reading and writting must be perform using python script.
+-->import csv
+f=open('c:\sqlite\csv\student.csv','w')
+w=csv.writer(f)
+header=["sid","sname","scity","scontact"]
+w.writerow(header)
+row=[[1,'ram','bardoli',8456845698],
+[2,'sita','Surat',7568856438],
+[3,'radha','baroda',6445889762],
+[4,'Om','mehasana',6759875985],
+[5,'sai','jaipur',8795642318]]
+w.writerows(row)
+l=[]
+for i in range(5):
+sid=int(input("enter student id:"))
+sname=input("enter student name:")
+scity=input("enter student city:")
+scontact=int(input("enter student contact:"))
+s=[sid,sname,scity,scontact]
+l.append(s)
+row=extend(l)
+enter student id:6 enter student name:Mahesh enter student city:Navsari enter student contact:9831674531 enter student id:7 enter student name:Shiv enter student city:Surat enter student contact:9831657423 enter student id:8 enter student name:Parvati enter student city:Baroda enter student contact:7643894106 enter student id:9 enter student name:Meghna enter student city:Bhopal enter student contact:8943167578 enter student id:10 enter student name:Trisha enter student city:Jaipur enter student contact:6534987123 f.close() with open('c:/sqlite/csv/student.csv','w') as f: w=csv.writer(f) w.writerows(row) w.writerow(header) with open('c:/sqlite/csv/student.csv','r') as r: rf=csv.reader(r) for row in rf: print(row)
