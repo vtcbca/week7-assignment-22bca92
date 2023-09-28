@@ -1,0 +1,84 @@
+WEEK:3
+Write a python script to perform CRUD operation on following table of "ESM.db" database.
+Employee ( eid, ename, dept, basic, branch). eid must be primary key.
+Department : Account, Inventory, IT, HR.
+Peform Following Operation.
+import sqlite3 as sq
+con=sq.connect('c:/sqlite3/EMS.db')
+cur=con.cursor()
+1. Create table
+query='''create table if not exists employee
+(
+eid int primary key,
+ename text,
+dept text
+basic int,
+branch text
+)'''
+cur.execute(query)
+con.commit()
+JOURNAL:3
+2. Insert 5 Records directly, 5 records using tuple and 5 records using taking input from user
+def insertemp(n):
+l=[]
+query=f"insert into employee14 values(?,?,?,?,?)"
+for i in range(n):
+eid=int(input("enter employee id:"))
+ename=input("enter employee name:")
+dept=input("enter employee dept:")
+basic=int(input("enter employee basic:"))
+branch=input("enter employee branch:")
+t=(eid,ename,dept,basic,branch)
+l.append(t)
+cur.executemany(query,l)
+con.commit()
+3. Update records who are from "Surat" branch with increment in salary 10%.
+def updatesal():
+query=f"update employee14 set basic=basic+basic*0.1 where branch='surat'"
+cur.execute(query)
+con.commit()
+JOURNAL:3
+4. Print All records.
+def displayrecord():
+query=f"select * from employee14"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
+5. Print records where dept is "HR" and "IT".
+def deptrecord():
+query=f"select * from employee14 where dept in ('hr','it','HR','IT')"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
+6. Print records in sorting order of department.
+def sortrecorddept():
+query=f"select * from employee14 order by dept"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
+JOURNAL:3
+7. Print records where basic is >6000.
+def recordbasicgreaterthan():
+query=f"select * from employee14 where basic>6000"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
+8. Print records whrere employee name second character is "r".
+def sortrecorddept():
+query=f"select * from employee14 where ename like '_r%'"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
+9. Grouping record of employee who are from "Account" and "Inventory".
+def groupingrecord():
+query=f"select dept,cout(*) as count from employee14 where dept in('account','inventory')"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
+JOURNAL:3
+10. Print all records based on branch name in descending order.
+def orderbydesc():
+query=f"select * from employee14 order by branch desc"
+cur.execute(query)
+data=cur.fetchall()
+con.commit()
