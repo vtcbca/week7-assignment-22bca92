@@ -1,0 +1,158 @@
+WEEK-4
+
+import sqlite3 as sq
+con=sq.connect('Contactmanagementsystem.db')
+c=con.cursor()
+def create_tb(tblq):
+c.execute(tblq)
+con.commit()
+tbq='''create table if not exists contact_tbl
+(
+fname text,
+lname text,
+contactno int,
+email text,
+city text
+)'''
+def validate_inputdata():
+tq='''create trigger if not exists validate_phoneno BEFORE INSERT ON contact_tbl
+BEGIN
+select case
+when length(NEW.contactno)!=10
+then raise(abort,'invalid phone number,phone number should be 10 digit')
+END;
+END;'''
+c.execute(tq)
+t1q='''create trigger if not exists validate_email BEFORE INSERT ON contact_tbl
+BEGIN
+select case
+when NEW.email NOT LIKE '_@__%__%'
+then raise(abort,'invalid email id,email id should be in proper format')
+END;
+END;'''
+c.execute(t1q)
+def logtbl_for_insert(inslogq):
+c.execute(inslogq)
+con.commit()
+inslogq='''create table if not exists insertlog_tbl
+(
+fname text,
+lname text,
+contactno int,
+datetime text,
+operation_name text
+)'''
+def ins_trigger(t2q):
+c.execute(t2q)
+con.commit()
+t2q='''create trigger if not exists insert_trigger AFTER INSERT ON contact_tbl
+BEGIN
+insert into insertlog_tbl
+values(NEW.fname,NEW.lname,NEW.contactno,datetime('now','localtime'),'INSERT')
+END;'''
+def logtbl_for_delete(dellogq):
+c.execute(dellogq)
+con.commit()
+dellogq='''create table if not exists deletelog_tbl
+(
+fname text,
+lname text,
+contactno int,
+datetime text,
+operation_name text
+)'''
+def del_trigger(t3q):
+c.execute(t3q)
+con.commit()
+t3q='''create trigger if not exists del_trigger AFTER DELETE ON contact_tbl
+BEGIN
+insert into deletelog_tbl
+values(OLD.fname,OLD.lname,OLD.contactno,datetime('now','localtime'),'DELETE')
+END;'''
+def logtbl_for_update(uplogq):
+c.execute(uplogq)
+con.commit()
+uplogq='''create table if not exists updatelog_tbl
+(
+fname text,
+lname text,
+contactno int,
+newcontactno int,
+datetime text,
+operation_name text
+)'''
+def update_trigger(t4q):
+c.execute(t4q)
+con.commit()
+t4q='''create trigger if not exists update_trigger AFTER UPDATE ON contact_tbl
+BEGIN
+insert into updatelog_tbl
+values(OLD.fname,OLD.lname,OLD.contactno,NWE.contactno,datetime('now','localtime'),'UPDATE')
+END;'''
+def insert_record():
+c.execute('''insert into contact_tbl
+values('mishika','patel',5468775888,'mis@gmail.com','mumbai'),
+('ritesh','rajput',545887866,'ritesh@gmail.com','Delhi'),
+('shree','Vyas',874569611,'Shre@Gmail.com','surat'),
+('ram','Shah',745686689,'Ram@Gmail.com','bhopal'),
+('shiv','patel',984598566,'Shiv@gamil.com','meshana')''')
+def update_record():
+upq='''update contact_tbl set contactno=684268566 where fname='shiv';'''
+c.execute(upq)
+def delete_record():
+delq='''delete from contact_tbl where fname='shree';'''
+c.execute(delq)
+def printrecord_of_maintbl():
+print("\n\n\t\t record in main contact table")
+q="select * from contact_tbl;"
+c.execute(q)
+records=c.fetchall()
+header="{:^12}{:^12}{:^12}{:25}{:^12}".format('First Name','Last Name','Contact No','Email','City')
+for re in records:
+record_line="{:^12}{:^12}{:^12}{:^25}{:^12}".format(re[0],re[1],re[2],re[3],re[4])
+print(record_line)
+def record_of_inslog_tbl():
+print("\n\n\t\t insert log table details")
+q1="select * from insertlog_tbl;"
+c.execute(q1)
+records1=c.fetchall()
+header="{:^12}{:^12}{:^12}{:25}{:^12}".format('First Name','Last Name','Contact No','Date-Time','Operation Name')
+for re in records1:
+record_line1="{:^12}{:^12}{:^12}{:^25}{:^12}".format(re[0],re[1],re[2],re[3],re[4])
+print(record_line1)
+def record_of_dellog_tbl():
+print("\n\n\t\t delete log table details")
+q2="select * from deletelog_tbl;"
+c.execute(q2)
+records=c.fetchall()
+header="{:^12}{:^12}{:^12}{:25}{:^12}".format('First Name','Last Name','Contact No','Date-Time','Operation Name')
+for re in records:
+record_line="{:^12}{:^12}{:^12}{:^25}{:^12}".format(re[0],re[1],re[2],re[3],re[4])
+print(record_line1)
+def record_of_uplog_tbl():
+print("\n\n\t\t update log table details")
+q3="select * from updatelog_tbl;"
+c.execute(q3)
+records=c.fetchall()
+header="{:^12}{:^12}{:^12}{:25}{:^12}".format('First Name','Last Name','OldContact No','NewContact No','Date-Time',
+'Operation Name')
+for re in records:
+record_line="{:^12}{:^12}{:^12}{:^25}{:^12}".format(re[0],re[1],re[2],re[3],re[4])
+print(record_line)
+def mainfunc():
+create_tb(tbq)
+validate_inputdata()
+logtbl_for_insert(inslogq)
+ins_trigger(t2q)
+logtbl_for_delete(dellogq)
+del_trigger(t3q)
+logtbl_for_update(uplogq)
+update_trigger(t4q)
+insert_record()
+update_record()
+delete_record()
+printrecords_of_maintbl()
+record_of_insert_tbl()
+record_of_dellog_tbl()
+record_of_uplog_tbl()
+mainfunc()
